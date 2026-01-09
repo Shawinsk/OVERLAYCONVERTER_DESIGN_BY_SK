@@ -114,7 +114,7 @@ The Overlay Converter is a specialized local tool designed to extract assets and
 
 ========================================================================
 
-Property of Pulse Overlay Project
+
 
 Generated for: SK
 
