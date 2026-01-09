@@ -1,108 +1,82 @@
-# OVERLAYCONVERTER\_DESIGN\_BY\_SK
+# OVERLAYCONVERTER_DESIGN_BY_SK
 
 OVERLAYCONVERTER TO MEDIA FILES OR JSON FILE
 
-
-
 ========================================================================
 
-&nbsp;             OVERLAY CONVERTER - GAMING EDITION
+&nbsp; OVERLAY CONVERTER - GAMING EDITION
 
-&nbsp;                    Designed by SK
+&nbsp; Designed by SK
 
 ========================================================================
-
-
 
 \[QUICK START - READ THIS FIRST]
 
->> STARTUP FILE:  OverlayConverter.html
-
-
+> > STARTUP FILE: OverlayConverter.html
 
 To use this tool:
 
-1\.  Locate the file named "OverlayConverter.html" in this folder.
+1\. Locate the file named "OverlayConverter.html" in this folder.
 
-2\.  Double-click it to open it in your default web browser (Chrome, Edge, Firefox, etc.).
+2\. Double-click it to open it in your default web browser (Chrome, Edge, Firefox, etc.).
 
-3\.  No installation is required.
-
-
+3\. No installation is required.
 
 ========================================================================
-
-
 
 \[INTRODUCTION]
 
 The Overlay Converter is a specialized local tool designed to extract assets and configuration data from StreamElements `.overlay` files (which are technically ZIP archives). It features a high-performance "Gaming" aesthetic interface with a focus on ease of use and efficiency.
 
-
-
 \[KEY FEATURES]
 
+1\. \*\*Drag \& Drop Interface\*\*
 
+&nbsp; - Large, centralized upload zone.
 
-1\.  \*\*Drag \& Drop Interface\*\*
+&nbsp; - Simply drag your `.overlay` or `.zip` file to start.
 
-&nbsp;   - Large, centralized upload zone.
+2\. \*\*Dual Operation Modes\*\*
 
-&nbsp;   - Simply drag your `.overlay` or `.zip` file to start.
+&nbsp; - \*\*Media Extraction:\*\* Visual gallery to view and download images and videos (.png, .webm, .mp4, etc.).
 
+&nbsp; - \*\*Data Dump (JSON):\*\* instantly converts the overlay's file structure and code (JS, CSS, JSON) into a single readable `overlay\_data.json` file.
 
+3\. \*\*Advanced File Management\*\*
 
-2\.  \*\*Dual Operation Modes\*\*
+&nbsp; - \*\*File Manifest (Sidebar):\*\* Lists every file in the archive.
 
-&nbsp;   - \*\*Media Extraction:\*\* Visual gallery to view and download images and videos (.png, .webm, .mp4, etc.).
+&nbsp; - \*\*Bulk Actions:\*\* Select specific files using checkboxes and download them in batches.
 
-&nbsp;   - \*\*Data Dump (JSON):\*\* instantly converts the overlay's file structure and code (JS, CSS, JSON) into a single readable `overlay\_data.json` file.
+&nbsp; - Works for both the Media Gallery and the complete File List.
 
+4\. \*\*Premium Gaming UI\*\*
 
+&nbsp; - Neon styling (Purple/Cyan theme).
 
-3\.  \*\*Advanced File Management\*\*
+&nbsp; - Responsive "Rajdhani" typography.
 
-&nbsp;   - \*\*File Manifest (Sidebar):\*\* Lists every file in the archive.
-
-&nbsp;   - \*\*Bulk Actions:\*\* Select specific files using checkboxes and download them in batches. 
-
-&nbsp;   - Works for both the Media Gallery and the complete File List.
-
-
-
-4\.  \*\*Premium Gaming UI\*\*
-
-&nbsp;   - Neon styling (Purple/Cyan theme).
-
-&nbsp;   - Responsive "Rajdhani" typography.
-
-&nbsp;   - Smooth animations and glassmorphism effects.
-
-
+&nbsp; - Smooth animations and glassmorphism effects.
 
 \[HOW TO USE]
 
+1\. Open `OverlayConverter.html` as described above.
 
+2\. Drag and drop your target `.overlay` file into the "Initiate Upload" box.
 
-1\.  Open `OverlayConverter.html` as described above.
+3\. Choose your desired action:
 
-2\.  Drag and drop your target `.overlay` file into the "Initiate Upload" box.
+&nbsp; - Click \*\*MEDIA EXTRACTION\*\* to view images and videos.
 
-3\.  Choose your desired action:
+&nbsp; - Click \*\*DATA DUMP\*\* to get the configuration JSON immediately.
 
-&nbsp;   - Click \*\*MEDIA EXTRACTION\*\* to view images and videos.
+4\. In Media Mode:
 
-&nbsp;   - Click \*\*DATA DUMP\*\* to get the configuration JSON immediately.
+&nbsp; - Use the Sidebar to see all files. Check the boxes to download specific items.
 
-4\.  In Media Mode:
+&nbsp; - Use the Main Gallery to preview visuals.
 
-&nbsp;   - Use the Sidebar to see all files. Check the boxes to download specific items.
-
-&nbsp;   - Use the Main Gallery to preview visuals.
-
-&nbsp;   - Click "Download Selected" to save multiple files at once.
-
-
+&nbsp; - Click "Download Selected" to save multiple files at once.
 
 \[REQUIREMENTS]
 
@@ -110,15 +84,8 @@ The Overlay Converter is a specialized local tool designed to extract assets and
 
 \- No internet connection required (runs 100% locally).
 
-
-
 ========================================================================
-
-Property of Pulse Overlay Project
 
 Generated for: SK
 
 ========================================================================
-
-
-
