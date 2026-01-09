@@ -4,85 +4,85 @@ OVERLAYCONVERTER TO MEDIA FILES OR JSON FILE
 
 ========================================================================
 
-&nbsp; OVERLAY CONVERTER - GAMING EDITION
+OVERLAY CONVERTER - GAMING EDITION
 
-&nbsp; Designed by SK
+Designed by SK
 
 ========================================================================
 
-\[QUICK START - READ THIS FIRST]
+[QUICK START - READ THIS FIRST]
 
-> > STARTUP FILE: OverlayConverter.html
+> > STARTUP FILE: index.html
 
 To use this tool:
 
-1\. Locate the file named "OverlayConverter.html" in this folder.
+1. Locate the file named "index.html" in this folder.
 
-2\. Double-click it to open it in your default web browser (Chrome, Edge, Firefox, etc.).
+2. Double-click it to open it in your default web browser (Chrome, Edge, Firefox, etc.).
 
-3\. No installation is required.
+3. No installation is required.
 
 ========================================================================
 
-\[INTRODUCTION]
+[INTRODUCTION]
 
 The Overlay Converter is a specialized local tool designed to extract assets and configuration data from StreamElements `.overlay` files (which are technically ZIP archives). It features a high-performance "Gaming" aesthetic interface with a focus on ease of use and efficiency.
 
-\[KEY FEATURES]
+[KEY FEATURES]
 
-1\. \*\*Drag \& Drop Interface\*\*
+1. **Drag & Drop Interface**
 
-&nbsp; - Large, centralized upload zone.
+   - Large, centralized upload zone.
 
-&nbsp; - Simply drag your `.overlay` or `.zip` file to start.
+   - Simply drag your `.overlay` or `.zip` file to start.
 
-2\. \*\*Dual Operation Modes\*\*
+2. **Dual Operation Modes**
 
-&nbsp; - \*\*Media Extraction:\*\* Visual gallery to view and download images and videos (.png, .webm, .mp4, etc.).
+   - **Media Extraction:** Visual gallery to view and download images and videos (.png, .webm, .mp4, etc.).
 
-&nbsp; - \*\*Data Dump (JSON):\*\* instantly converts the overlay's file structure and code (JS, CSS, JSON) into a single readable `overlay\_data.json` file.
+   - **Data Dump (JSON):** instantly converts the overlay's file structure and code (JS, CSS, JSON) into a single readable `overlay_data.json` file.
 
-3\. \*\*Advanced File Management\*\*
+3. **Advanced File Management**
 
-&nbsp; - \*\*File Manifest (Sidebar):\*\* Lists every file in the archive.
+   - **File Manifest (Sidebar):** Lists every file in the archive.
 
-&nbsp; - \*\*Bulk Actions:\*\* Select specific files using checkboxes and download them in batches.
+   - **Bulk Actions:** Select specific files using checkboxes and download them in batches.
 
-&nbsp; - Works for both the Media Gallery and the complete File List.
+   - Works for both the Media Gallery and the complete File List.
 
-4\. \*\*Premium Gaming UI\*\*
+4. **Premium Gaming UI**
 
-&nbsp; - Neon styling (Purple/Cyan theme).
+   - Neon styling (Purple/Cyan theme).
 
-&nbsp; - Responsive "Rajdhani" typography.
+   - Responsive "Rajdhani" typography.
 
-&nbsp; - Smooth animations and glassmorphism effects.
+   - Smooth animations and glassmorphism effects.
 
-\[HOW TO USE]
+[HOW TO USE]
 
-1\. Open `OverlayConverter.html` as described above.
+1. Open `index.html` as described above.
 
-2\. Drag and drop your target `.overlay` file into the "Initiate Upload" box.
+2. Drag and drop your target `.overlay` file into the "Initiate Upload" box.
 
-3\. Choose your desired action:
+3. Choose your desired action:
 
-&nbsp; - Click \*\*MEDIA EXTRACTION\*\* to view images and videos.
+   - Click **MEDIA EXTRACTION** to view images and videos.
 
-&nbsp; - Click \*\*DATA DUMP\*\* to get the configuration JSON immediately.
+   - Click **DATA DUMP** to get the configuration JSON immediately.
 
-4\. In Media Mode:
+4. In Media Mode:
 
-&nbsp; - Use the Sidebar to see all files. Check the boxes to download specific items.
+   - Use the Sidebar to see all files. Check the boxes to download specific items.
 
-&nbsp; - Use the Main Gallery to preview visuals.
+   - Use the Main Gallery to preview visuals.
 
-&nbsp; - Click "Download Selected" to save multiple files at once.
+   - Click "Download Selected" to save multiple files at once.
 
-\[REQUIREMENTS]
+[REQUIREMENTS]
 
-\- A modern web browser with JavaScript enabled.
+- A modern web browser with JavaScript enabled.
 
-\- No internet connection required (runs 100% locally).
+- No internet connection required (runs 100% locally).
 
 ========================================================================
 
