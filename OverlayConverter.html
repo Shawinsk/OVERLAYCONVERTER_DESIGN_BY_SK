@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamElements Overlay Extractor | Gaming Edition</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0b0b10;
+            --bg-panel: #15151e;
+            --primary: #d946ef; /* Neon Purple */
+            --primary-glow: rgba(217, 70, 239, 0.4);
+            --secondary: #06b6d4; /* Neon Cyan */
+            --secondary-glow: rgba(6, 182, 212, 0.4);
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #2d2d3b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(217, 70, 239, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.08) 0%, transparent 25%);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Scanline Overlay Effect */
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.3;
+        }
+
+        h1, h2, h3, .app-title, .choice-title {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: rgba(21, 21, 30, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+        .app-title { 
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem; 
+            font-weight: 700;
+            margin: 0; 
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        /* Buttons & Interactive Elements */
+        .upload-hero {
+            border: 2px dashed #444;
+            border-radius: 16px;
+            padding: 60px;
+            text-align: center;
+            cursor: pointer;
+            background: linear-gradient(145deg, #1a1a24, #121218);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 600px;
+            width: 80%;
+            position: relative;
+            overflow: hidden;
+        }
+        .upload-hero::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .upload-hero:hover {
+            border-color: transparent;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 20px var(--primary-glow);
+        }
+        .upload-hero:hover::before { opacity: 1; }
+
+        .choice-card {
+            background: rgba(30, 30, 40, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            width: 280px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+        .choice-card:hover {
+            background: rgba(40, 40, 55, 0.8);
+            border-color: var(--secondary);
+            box-shadow: 0 0 30px var(--secondary-glow);
+            transform: translateY(-5px);
+        }
+        .choice-icon { font-size: 3.5rem; margin-bottom: 20px; display: block; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+        
+        .download-btn {
+            background: linear-gradient(90deg, var(--secondary), #0891b2);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px var(--secondary-glow);
+            transition: 0.2s;
+            text-decoration: none;
+        }
+        .download-btn:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 25px var(--secondary-glow);
+        }
+        .download-btn:disabled { filter: grayscale(1); cursor: not-allowed; opacity: 0.6; }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            transition: 0.2s;
+        }
+        .back-btn:hover { border-color: var(--primary); color: #fff; box-shadow: 0 0 10px var(--primary-glow); }
+
+        /* Layout Helpers */
+        .choice-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px;
+            z-index: 1;
+        }
+        .media-view-container {
+            display: none; 
+            flex-grow: 1;
+            height: 100%;
+            overflow: hidden;
+            flex-direction: row;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: rgba(21, 21, 30, 0.95);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        .file-list-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .file-item {
+            padding: 10px;
+            border-bottom: 1px solid #222;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            transition: 0.2s;
+        }
+        .file-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .badge { background: #222; border: 1px solid #333; color: var(--secondary); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+
+        /* Gallery */
+        .gallery-content {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .gallery-grid {
+             display: grid;
+             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+             gap: 25px;
+        }
+        .media-card {
+            background: #1a1a22;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            transition: 0.3s;
+        }
+        .media-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px var(--primary-glow);
+            z-index: 5;
+        }
+        .preview-area {
+            height: 180px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .preview-area img, .preview-area video { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .card-footer {
+            padding: 12px;
+            background: #15151e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+        }
+        .card-footer .file-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Checkbox Custom */
+        .custom-cb {
+            appearance: none;
+            width: 18px; height: 18px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.5);
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .custom-cb:checked {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+        .custom-cb:checked::after {
+            content: '✓';
+            position: absolute; color: #fff; font-size: 12px;
+            top: -2px; left: 3px; font-weight: bold;
+        }
+
+        .hidden { display: none !important; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0b0b10; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 1.8rem;">🎮</div>
+            <h1 class="app-title">OVERLAY<span style="color:var(--text-main);font-weight:300;">CONVERTER</span></h1>
+        </div>
+        
+        <div id="fileStatus" style="color: var(--secondary); font-family: 'Rajdhani'; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;"></div>
+
+        <!-- CREDIT BADGE IN HEADER -->
+        <div style="font-family: 'Rajdhani', sans-serif; color: #fff; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; border: 2px solid var(--primary); padding: 8px 20px; border-radius: 8px; background: rgba(217, 70, 239, 0.15); box-shadow: 0 0 20px var(--primary-glow); text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+            DESIGN BY <span style="color: var(--secondary); text-shadow: 0 0 15px var(--secondary-glow); font-weight: 800; font-size: 1.5rem; margin-left:8px;">SK</span>
+        </div>
+
+        <!-- Hidden input -->
+        <input type="file" id="fileInput" accept=".overlay,.zip" style="display: none;">
+    </div>
+
+    <!-- 1. EMPTY STATE (Main Upload) -->
+    <div id="emptyState" class="choice-container" style="justify-content: center;">
+        <div id="dropZoneHero" class="upload-hero">
+            <div style="font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--primary));">📂</div>
+            <h2 style="font-size: 2.5rem; margin: 0 0 10px 0; color: #fff;">INITIATE UPLOAD</h2>
+            <p style="color: var(--text-dim); font-size: 1.1rem; margin: 0;">DROP .OVERLAY FILE HERE</p>
+        </div>
+    </div>
+
+    <!-- 2. SELECTION SCREEN (Choose Action) -->
+    <div id="choiceScreen" class="choice-container hidden">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 2.5rem; color: var(--secondary); text-shadow: 0 0 20px var(--secondary-glow);">ACCESS GRANTED</h2>
+            <p style="color: var(--text-dim); font-size: 1.1rem; letter-spacing: 1px;">SELECT OPERATION MODE</p>
+        </div>
+
+        <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+            <!-- OPTION A: MEDIA -->
+            <div class="choice-card" onclick="selectMode('media')">
+                <span class="choice-icon">🖼️</span>
+                <div class="choice-title">MEDIA EXTRACTION</div>
+                <div class="choice-desc">Visual gallery interface for image and video asset recovery.</div>
+            </div>
+
+            <!-- OPTION B: JSON -->
+            <div class="choice-card" onclick="selectMode('json')">
+                <span class="choice-icon">💾</span>
+                <div class="choice-title">DATA DUMP</div>
+                <div class="choice-desc">Export raw configuration and file paths to JSON format.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MEDIA VIEW (Original Interface) -->
+    <div id="mediaView" class="media-view-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <button class="back-btn" onclick="goBackToChoices()">← BACK</button>
+                <span style="font-family: 'Rajdhani'; font-weight: bold; font-size: 1.1rem; letter-spacing: 1px;">FILE MANIFEST</span>
+            </div>
+
+            <!-- SIDEBAR TOOLBAR (New) -->
+            <div id="sidebarToolbar" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #333;">
+                <input type="checkbox" id="sidebarSelectAll" class="custom-cb">
+                <button id="sidebarDownloadBtn" class="download-btn" style="padding: 6px 12px; font-size: 0.8rem; flex-grow: 1; text-align:center;">DOWNLOAD SELECTED (0)</button>
+            </div>
+
+            <div id="fileInfoList" class="file-list-container"></div>
+        </div>
+
+        <!-- Gallery -->
+        <div class="gallery-content">
+            <!-- Toolbar -->
+            <div id="galleryToolbar" style="background: rgba(20,20,30,0.8); backdrop-filter: blur(5px); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="gallerySelectAll" class="custom-cb">
+                    <label for="gallerySelectAll" style="cursor: pointer; font-family: 'Rajdhani'; font-weight: bold; font-size: 1.1rem; letter-spacing: 0.5px;">SELECT ALL ASSETS</label>
+                </div>
+                <button id="galleryDownloadBtn" class="download-btn">DOWNLOAD SELECTED (0)</button>
+            </div>
+
+            <div id="galleryGrid" class="gallery-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileStatus = document.getElementById('fileStatus');
+        const emptyState = document.getElementById('emptyState');
+        const dropZoneHero = document.getElementById('dropZoneHero');
+        const choiceScreen = document.getElementById('choiceScreen');
+        const mediaView = document.getElementById('mediaView');
+        const fileInfoList = document.getElementById('fileInfoList');
+        const galleryGrid = document.getElementById('galleryGrid');
+        
+        // Gallery Controls
+        const gallerySelectAll = document.getElementById('gallerySelectAll');
+        const galleryDownloadBtn = document.getElementById('galleryDownloadBtn');
+        
+        // Sidebar Controls
+        const sidebarSelectAll = document.getElementById('sidebarSelectAll');
+        const sidebarDownloadBtn = document.getElementById('sidebarDownloadBtn');
+
+        let currentZip = null;
+        let currentFilename = "";
+        
+        // Data storage
+        let mediaMeta = []; 
+        let fileMeta = []; // For sidebar
+
+        // --- INITIALIZATION ---
+        window.onload = function() { resetApp(); };
+
+        function resetApp() {
+            currentZip = null;
+            currentFilename = "";
+            fileInput.value = "";
+            fileStatus.textContent = "";
+            emptyState.style.display = 'flex';
+            choiceScreen.classList.add('hidden');
+            mediaView.style.display = 'none';
+            mediaView.classList.remove('active');
+            history.replaceState({ view: 'home' }, '', '');
+        }
+
+        window.addEventListener('popstate', (event) => {
+            const state = event.state;
+            if (!state || state.view === 'home') {
+                resetApp();
+            } else if (state.view === 'choices') {
+                if (currentZip) showChoices(false); else resetApp();
+            } else if (state.view === 'media') {
+                 if (currentZip) {
+                    renderMediaView();
+                    mediaView.style.display = 'flex';
+                    choiceScreen.classList.add('hidden');
+                    emptyState.style.display = 'none';
+                 } else resetApp();
+            }
+        });
+
+        // --- DRAG & DROP ---
+        dropZoneHero.addEventListener('click', () => fileInput.click());
+        dropZoneHero.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZoneHero.style.borderColor = "var(--secondary)";
+            dropZoneHero.style.background = "#252525";
+            dropZoneHero.style.transform = "scale(1.02)";
+        });
+        dropZoneHero.addEventListener('dragleave', (e) => {
+             e.preventDefault();
+            dropZoneHero.style.borderColor = "#444";
+            dropZoneHero.style.background = "linear-gradient(145deg, #1a1a24, #121218)";
+            dropZoneHero.style.transform = "scale(1)";
+        });
+        dropZoneHero.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZoneHero.style.borderColor = "#444";
+            dropZoneHero.style.background = "linear-gradient(145deg, #1a1a24, #121218)";
+            dropZoneHero.style.transform = "scale(1)";
+             if (e.dataTransfer.files.length > 0) loadFile(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', async (e) => {
+            if (e.target.files.length > 0) loadFile(e.target.files[0]);
+        });
+
+        async function loadFile(file) {
+            fileStatus.textContent = "SYSTEM PROCESSING >> " + file.name;
+            currentFilename = file.name;
+            try {
+                currentZip = await JSZip.loadAsync(file);
+                fileStatus.textContent = "ACTIVE: " + file.name;
+                showChoices(true); 
+            } catch (err) {
+                console.error(err);
+                alert("Error loading zip: " + err.message);
+                fileStatus.textContent = "CRITICAL ERROR";
+            }
+        }
+
+        function showChoices(pushToHistory = false) {
+            emptyState.style.display = 'none';
+            mediaView.style.display = 'none';
+            choiceScreen.classList.remove('hidden');
+            if (pushToHistory) history.pushState({ view: 'choices' }, '', '');
+        }
+        
+        function goBackToChoices() {
+            if (history.state && history.state.view === 'media') history.back(); 
+            else showChoices(true);
+        }
+
+        function selectMode(mode) {
+            if (mode === 'media') {
+                renderMediaView();
+                mediaView.style.display = 'flex';
+                choiceScreen.classList.add('hidden');
+                history.pushState({ view: 'media' }, '', '');
+            } else if (mode === 'json') {
+                renderJsonExport();
+            }
+        }
+
+        // --- RENDER LOGIC ---
+        async function renderMediaView() {
+            fileInfoList.innerHTML = '';
+            galleryGrid.innerHTML = '';
+            mediaMeta = [];
+            fileMeta = [];
+            
+            const files = Object.keys(currentZip.files).sort();
+            let mediaCount = 0;
+            let fileCount = 0;
+
+            for (let filename of files) {
+                const zipEntry = currentZip.files[filename];
+                if (zipEntry.dir) continue;
+
+                const blob = await zipEntry.async("blob");
+                const url = URL.createObjectURL(blob);
+                const simpleName = filename.split('/').pop();
+                const ext = simpleName.split('.').pop().toUpperCase();
+
+                // --- 1. SIDEBAR ITEM ---
+                const currentIndex = fileCount;
+                fileMeta.push({ index: currentIndex, filename, simpleName, url });
+                
+                const listRow = document.createElement('div');
+                listRow.className = 'file-item';
+                listRow.innerHTML = `
+                    <div style="display: flex; align-items: start; gap: 10px;">
+                        <input type="checkbox" class="custom-cb sidebar-cb" data-index="${currentIndex}" style="margin-top: 4px;">
+                        <div style="flex-grow: 1; overflow: hidden;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                                <span class="file-name" title="${filename}" style="font-size:0.8rem;">${simpleName}</span>
+                                <a href="${url}" download="${simpleName}" title="Download" style="text-decoration:none; color:var(--secondary); font-weight:bold; font-size: 1.1rem;">⬇</a>
+                            </div>
+                            <div style="display:flex; justify-content:space-between;">
+                                <span class="badge">${ext}</span>
+                                <span style="font-size:0.7rem; color:#666;">${formatSize(blob.size)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                fileInfoList.appendChild(listRow);
+                fileCount++;
+
+                // --- 2. GALLERY ITEM (If Media) ---
+                if (filename.match(/\.(png|jpg|jpeg|gif|webm|mp4|ogg|mov)$/i) && !filename.startsWith('__MACOSX')) {
+                    const mIndex = mediaCount;
+                    mediaMeta.push({ index: mIndex, filename, simpleName, url });
+                    
+                    const card = document.createElement('div');
+                    card.className = 'media-card';
+                    
+                    const isVideo = filename.match(/\.(mp4|webm|ogg|mov)$/i);
+                    const previewHtml = isVideo ? 
+                        `<video src="${url}" controls muted loop></video>` : 
+                        `<img src="${url}" alt="${simpleName}">`;
+
+                    card.innerHTML = `
+                        <div class="preview-area">
+                            <div style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                                <input type="checkbox" class="custom-cb gallery-cb" data-index="${mIndex}">
+                            </div>
+                            ${previewHtml}
+                        </div>
+                        <div class="card-footer">
+                            <div class="file-name" style="max-width: 150px; font-size: 0.9rem; overflow:hidden; text-overflow:ellipsis;">${simpleName}</div>
+                            <a href="${url}" download="${simpleName}" class="download-btn">GET</a>
+                        </div>
+                    `;
+                    galleryGrid.appendChild(card);
+                    mediaCount++;
+                }
+            }
+            
+            // Re-attach listeners for new elements
+            document.querySelectorAll('.sidebar-cb').forEach(cb => cb.addEventListener('change', updateSidebarSelection));
+            document.querySelectorAll('.gallery-cb').forEach(cb => cb.addEventListener('change', updateGallerySelection));
+
+            updateSidebarSelection();
+            updateGallerySelection();
+        }
+
+        // --- SIDEBAR SELECTION LOGIC ---
+        function updateSidebarSelection() {
+            const checked = document.querySelectorAll('.sidebar-cb:checked');
+            sidebarDownloadBtn.textContent = `DOWNLOAD SELECTED (${checked.length})`;
+            const all = document.querySelectorAll('.sidebar-cb');
+            sidebarSelectAll.checked = (all.length > 0 && checked.length === all.length);
+        }
+
+        sidebarSelectAll.addEventListener('change', e => {
+            document.querySelectorAll('.sidebar-cb').forEach(cb => cb.checked = e.target.checked);
+            updateSidebarSelection();
+        });
+
+        sidebarDownloadBtn.addEventListener('click', async () => {
+            const checked = document.querySelectorAll('.sidebar-cb:checked');
+            if(checked.length === 0) return alert("NO FILES SELECTED");
+            if(!confirm(`DOWNLOAD ${checked.length} FILES?`)) return;
+
+            for (const cb of checked) {
+                const meta = fileMeta[cb.getAttribute('data-index')];
+                downloadItem(meta.url, meta.simpleName);
+                await new Promise(r => setTimeout(r, 300));
+            }
+        });
+
+        // --- GALLERY SELECTION LOGIC ---
+        function updateGallerySelection() {
+            const checked = document.querySelectorAll('.gallery-cb:checked');
+            galleryDownloadBtn.textContent = `DOWNLOAD SELECTED (${checked.length})`;
+            const all = document.querySelectorAll('.gallery-cb');
+            gallerySelectAll.checked = (all.length > 0 && checked.length === all.length);
+        }
+
+        gallerySelectAll.addEventListener('change', e => {
+            document.querySelectorAll('.gallery-cb').forEach(cb => cb.checked = e.target.checked);
+            updateGallerySelection();
+        });
+
+        galleryDownloadBtn.addEventListener('click', async () => {
+            const checked = document.querySelectorAll('.gallery-cb:checked');
+            if(checked.length === 0) return alert("NO MEDIA SELECTED");
+            if(!confirm(`DOWNLOAD ${checked.length} MEDIA ASSETS?`)) return;
+
+            for (const cb of checked) {
+                const meta = mediaMeta[cb.getAttribute('data-index')];
+                downloadItem(meta.url, meta.simpleName);
+                await new Promise(r => setTimeout(r, 500));
+            }
+        });
+        
+        function downloadItem(url, name) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        async function renderJsonExport() {
+            if (!currentZip) return;
+            const originalText = fileStatus.textContent;
+            fileStatus.textContent = "DUMPING MEMORY TO JSON...";
+            try {
+                const files = Object.keys(currentZip.files).sort();
+                const jsonOutput = {
+                    name: currentFilename,
+                    exported_at: new Date().toISOString(),
+                    files: []
+                };
+                for (let filename of files) {
+                    const zipEntry = currentZip.files[filename];
+                    if (zipEntry.dir) continue;
+                    const entry = { filename: filename, type: filename.split('.').pop(), path: filename };
+                    if (filename.match(/\.(json|js|css|html|txt|xml|yaml)$/i) && !filename.startsWith('__MACOSX')) {
+                        try {
+                            const text = await zipEntry.async("string");
+                            if (filename.endsWith('.json')) {
+                                try { entry.content = JSON.parse(text); } catch (e) { entry.content = text; }
+                            } else { entry.content = text; }
+                        } catch (e) {}
+                    }
+                    jsonOutput.files.push(entry);
+                }
+                const dataStr = JSON.stringify(jsonOutput, null, 2);
+                const blob = new Blob([dataStr], { type: "application/json" });
+                downloadItem(URL.createObjectURL(blob), currentFilename.replace('.overlay', '') + "_data.json");
+                alert("DATA DUMP SUCCESSFUL");
+                fileStatus.textContent = originalText;
+            } catch (err) {
+                console.error(err);
+                alert("Error exporting JSON: " + err.message);
+            }
+        }
+
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>
