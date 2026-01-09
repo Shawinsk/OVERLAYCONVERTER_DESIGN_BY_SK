@@ -292,6 +292,70 @@
         ::-webkit-scrollbar-track { background: #0b0b10; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* --- RESPONSIVE DESIGN (Mobile/Tablet) --- */
+        @media (max-width: 768px) {
+            body {
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+
+            /* Header */
+            .top-bar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+                text-align: center;
+            }
+            .app-title { font-size: 1.2rem; }
+            
+            /* Main Layout */
+            .media-view-container {
+                flex-direction: column;
+                height: auto;
+                overflow: visible;
+            }
+
+            /* Sidebar acts as top panel on mobile */
+            .sidebar {
+                width: 100%;
+                height: 300px; /* Fixed height scrollable area */
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                box-sizing: border-box;
+            }
+
+            /* Gallery */
+            .gallery-content {
+                padding: 15px;
+                overflow: visible;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); /* 1 col on mobile */
+            }
+
+            /* Toolbar Stacking */
+            #galleryToolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            #gallerySelectAll + label {
+                font-size: 0.9rem;
+            }
+
+            /* Cards */
+            .media-card { margin-bottom: 10px; }
+
+            /* Choice Screen */
+            .choice-container { padding: 40px 20px; }
+            .choice-card { width: 100%; max-width: 350px; }
+            
+            /* Upload Hero */
+            .upload-hero { padding: 40px 20px; width: 90%; }
+            .upload-hero h2 { font-size: 1.8rem !important; }
+        }
     </style>
 </head>
 <body>

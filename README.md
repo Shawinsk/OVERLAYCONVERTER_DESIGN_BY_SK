@@ -89,3 +89,5 @@ The Overlay Converter is a specialized local tool designed to extract assets and
 Generated for: SK
 
 ========================================================================
+
+LINK = https://shawinsk.github.io/OVERLAYCONVERTER_DESIGN_BY_SK/
